@@ -30,10 +30,10 @@
 
       <div class="row">
         <div class="col s12">
-          <ul class="tabs">
-            <li class="tab col s3"><a class="active" href="#cep-tab">CEP</a></li>
-            <li class="tab col s3"><a href="#rua-tab">RUA</a></li>
-            <li class="tab col s3"><a href="#log-tab">LOG</a></li>
+          <ul class="tabs tabs-fixed-width" style="display:flex; justify-content:center;">
+            <li class="tab"><a class="active" href="#cep-tab">CEP</a></li>
+            <li class="tab"><a href="#rua-tab">RUA</a></li>
+            <li class="tab"><a href="#log-tab">LOG</a></li>
           </ul>
         </div>
         <div id="cep-tab" class="col s12">
@@ -83,90 +83,71 @@
           <h1 class="header adjust-top center orange-text"> Busca Rua</h1>
           <div class="row center">
             <h5 class="header adjust-top col s12 light">Consulta de Rua</h5>
+
             <!-- INPUT UF -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">account_circle</i>
-              <input id="uf-rua" type="text" class="validate">
-              <label for="uf-rua">UF</label>
-            </div>
-            <!-- INPUT CIDADE  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">location_city</i>
-              <input id="cidade-rua" type="text" class="validate active">
-              <label for="cidade-rua">Cidade</label>
-            </div>
-            <!-- INPUT RUA  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">location_on</i>
-              <input id="rua" type="text" class="validate active">
-              <label for="rua">Rua</label>
+            <div class="input-field col s12 m4">
+              <select onchange="buscarCidades(this.value)" id="lista-ufs" class="browser-default">
+                <option value="" disabled selected>Escolha uma UF</option>
+              </select>
             </div>
 
-            <a onclick="mostrarRua()" class="waves-effect waves-light btn-small"><i
-                class="material-icons left">search</i>Buscar</a>
-            <a class="waves-effect waves-light btn-small"><i class="material-icons left">clear</i>Limpar</a>
+            <!-- INPUT CIDADE  -->
+            <div class="input-field col s12 m4">
+              <select id="lista-cidades" class="browser-default">
+                <option value="" disabled selected>Escolha uma Cidade</option>
+              </select>
+            </div>
+
+            <!-- INPUT RUA  -->
+            <div class="input-field col s12 m4">
+              <i class="material-icons prefix">location_on</i>
+              <input id="lista-ruas" type="text" class="validate">
+              <label for="lista-ruas">Rua</label>
+            </div>
+
+            <div class="col s12">
+              <a onclick="mostrarRua()" class="waves-effect waves-light btn-small" style="margin-right: 8px;"><i
+                  class="material-icons left">search</i>Buscar</a>
+              <a class="waves-effect waves-light btn-small"><i class="material-icons left">clear</i>Limpar</a>
+            </div>
           </div>
 
           <!-- Lista de Ruas -->
-          <ul id="lista-ruas" class="collection">
-            
-          </ul>
-
+          <ul id="resultado-ruas" class="collection"></ul>
         </div>
 
-        <div id="log-tab" class="col s12">
+      <div id="log-tab" class="col s12">
 
-          <h1 class="header adjust-top center orange-text"> Busca CEP</h1>
-          <div class="row center">
-            <h5 class="header adjust-top col s12 light">Consulta de CEP</h5>
-            <!-- INPUT CEP -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">account_circle</i>
-              <input id="cep" type="text" class="validate">
-              <label for="cep">CEP</label>
-            </div>
-            <!-- INPUT CIDADE  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">location_city</i>
-              <input id="cidade" type="text" class="validate active">
-              <label for="cidade">Cidade</label>
-            </div>
-            <!-- INPUT BAIRRO  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">location_on</i>
-              <input id="bairro" type="text" class="validate active">
-              <label for="bairro">Bairro</label>
-            </div>
-            <!-- INPUT ESTADO  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">map</i>
-              <input id="estado" type="text" class="validate active">
-              <label for="estado">Estado</label>
-            </div>
-            <!-- INPUT DDD  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">local_phone</i>
-              <input id="ddd" type="text" class="validate active">
-              <label for="ddd">DDD</label>
-            </div>
+        <h1 class="header adjust-top center orange-text"> Registro de Ocorrências</h1>
 
-            <a onclick="mostrarLog()" class="waves-effect waves-light btn-small"><i
-                class="material-icons left">search</i>Buscar</a>
-            <a class="waves-effect waves-light btn-small"><i class="material-icons left">clear</i>Limpar</a>
+        <div class="row">
+          <div class="col s12">
+            <h5 class="header adjust-top col s12 light">Ocorrências Registradas</h5>
+            <ul id="resultado-log" class="collection"></ul>
           </div>
-
         </div>
+
+        <div class="row center">
+          <a onclick="mostrarLog()" class="waves-effect waves-light btn-small"><i
+              class="material-icons left">search</i>Buscar</a>
+          <a onclick="limparLog()" class="waves-effect waves-light btn-small"><i class="material-icons left">clear</i>Limpar</a>
+        </div>
+
       </div>
-
-
-
     </div>
+
+
+
+  </div>
   </div>
 
 
 
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js"
+    integrity="sha512-h9644v03pHqrIHThkvXhB2PJ8zf5E9IyVnrSfZg8Yj8k4RsO4zldcQc4Bi9iVLUCCsqNY0b4WXVV4UB+wbWENA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
   <script src="js/script.js"></script>
