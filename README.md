@@ -2,18 +2,21 @@
 
 ## 📌 Sobre o Projeto
 
-A aplicação **Busca CEP** permite consultar informações de endereço a partir de um CEP ou buscar CEPs por rua, utilizando a API pública ViaCEP.
+A aplicação **Busca CEP** é uma ferramenta web que permite consultar informações de endereço a partir de um CEP ou buscar CEPs utilizando rua, cidade e estado.
 
-O sistema possui:
+O sistema utiliza a API pública **ViaCEP**, oferecendo uma interface simples, intuitiva e funcional para o usuário.
 
-* Consulta por CEP
-* Busca por rua
-* Histórico de buscas
-* Interface simples e interativa
+Além disso, a aplicação possui um sistema de histórico que permite salvar e restaurar buscas realizadas anteriormente.
+
+---
 
 ## 🎯 Objetivo
 
-O objetivo do projeto é transformar uma aplicação web tradicional em uma **Progressive Web App (PWA)**, tornando-a instalável, responsiva e com suporte offline.
+O objetivo deste projeto é transformar uma aplicação web tradicional em uma **Progressive Web App (PWA)**, tornando-a:
+
+* Instalável em dispositivos móveis 📱
+* Acessível mesmo com conexão instável 🌐
+* Disponível publicamente na internet 🚀
 
 ---
 
@@ -25,66 +28,99 @@ O objetivo do projeto é transformar uma aplicação web tradicional em uma **Pr
 * Fetch API
 * Axios
 * LocalStorage
+* API ViaCEP
 
 ---
 
 ## 📱 Conceitos de PWA
 
-Uma **PWA (Progressive Web App)** é uma aplicação web que oferece uma experiência semelhante a aplicativos nativos.
+Uma **PWA (Progressive Web App)** é uma aplicação web que oferece uma experiência semelhante a aplicativos nativos, podendo ser instalada no dispositivo do usuário.
 
-### Principais características:
+### 🔹 Principais características:
 
 * 📲 Instalável no dispositivo
-* 🌐 Funciona offline (via Service Worker)
+* 🌐 Funciona offline (parcialmente)
 * ⚡ Carregamento rápido
-* 📱 Responsiva
-* 🔔 Pode ter funcionalidades avançadas
+* 📱 Interface responsiva
+* 🔄 Atualização automática
 
-### Componentes principais:
+---
 
-* **manifest.json** → define aparência e comportamento do app
-* **Service Worker** → controla cache e funcionamento offline
+## ⚙️ Componentes do PWA
+
+### 📄 manifest.json
+
+Arquivo responsável por definir:
+
+* Nome da aplicação
+* Ícones
+* Cores
+* Comportamento (modo standalone)
+
+---
+
+### ⚙️ service-worker.js
+
+Responsável por:
+
+* Fazer cache dos arquivos
+* Permitir funcionamento offline
+* Melhorar performance
 
 ---
 
 ## ▶️ Como rodar o projeto localmente
 
-Você pode rodar de duas formas:
+Você pode executar o projeto de duas formas:
 
-### ✔️ Opção 1 (recomendado)
+### ✔️ Opção 1 (Recomendada)
 
-Usando Live Server no VS Code:
+Utilizando o Live Server no VS Code:
 
-* Clique com botão direito no `index.html`
-* Selecione **Open with Live Server**
+1. Clique com o botão direito no arquivo `index.html`
+2. Selecione **Open with Live Server**
+
+---
 
 ### ✔️ Opção 2
 
-Usar qualquer servidor local simples
+Abrir com qualquer servidor local disponível
 
 ---
 
 ## 🚀 Deploy no Netlify
 
-Passos realizados:
+Para disponibilizar a aplicação na internet, foi utilizado o Netlify.
 
-1. Acesso ao site do Netlify
-2. Criação de conta
-3. Upload da pasta do projeto
-4. Deploy automático realizado
+### 🔹 Passo a passo:
 
-🔗 Link da aplicação:
-(COLE AQUI SEU LINK DO NETLIFY)
+1. Acessar o site do Netlify
+2. Criar uma conta
+3. Selecionar "Add new site"
+4. Escolher "Deploy manually"
+5. Enviar a pasta do projeto
+6. Aguardar o deploy automático
+
+---
+
+## 🔗 Link da aplicação
+
+👉 (https://aquamarine-sherbet-ef3b83.netlify.app/)
 
 ---
 
 ## 📦 Funcionalidades
 
-* Consulta de CEP via API ViaCEP
-* Busca por endereço
+* Consulta de endereço por CEP
+* Busca de CEP por rua
 * Histórico de consultas
+* Restauração de buscas anteriores
 * Interface responsiva
 * Aplicação instalável (PWA)
-* Cache básico para uso offline
+* Cache para uso offline parcial
 
 ---
+
+## 📌 Considerações Finais
+
+O projeto demonstra na prática como transformar uma aplicação web simples em uma aplicação moderna, utilizando conceitos de Progressive Web App, melhorando a experiência do usuário e ampliando sua acessibilidade.
