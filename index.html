@@ -1,133 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-br">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Busca CEP</title>
 
-  <!-- CSS  -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d47a1">
+
+  <!-- Materialize -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
-  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+  <!-- CSS CUSTOM -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-  <nav class="light-blue lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="#"> busca endereço</a></li>
-      </ul>
 
-      <ul id="nav-mobile" class="sidenav">
-        <li><a href="#">buscar endereço</a></li>
-      </ul>
-      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+  <!-- NAVBAR -->
+  <nav class="blue darken-3">
+    <div class="nav-wrapper container">
+      <a class="brand-logo">Busca CEP</a>
     </div>
   </nav>
-  <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <div class="row">
-        <div class="col s12">
-          <ul class="tabs">
-            <li class="tab col s3"><a class="active" href="#cep-tab">CEP</a></li>
-            <li class="tab col s3"><a href="#rua-tab">RUA</a></li>
-            <li class="tab col s3"><a href="#log-tab">LOG</a></li>
-          </ul>
-        </div>
-        <!-- CONTEUDO DO CEP -->
-        <div id="cep-tab" class="col s12">
-          <h1 class="header adjust-top center orange-text"> Busca CEP</h1>
-          <div class="row center">
-            <h5 class="header adjust-top col s12 light">Consulta de CEP</h5>
-            <!-- INPUT CEP -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">account_circle</i>
-              <input id="cep" type="text" class="validate">
-              <label for="cep">CEP</label>
-            </div>
-            <!-- INPUT CIDADE  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">location_city</i>
-              <input id="cidade" type="text" class="validate active">
-              <label for="cidade">Cidade</label>
-            </div>
-            <!-- INPUT BAIRRO  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">location_on</i>
-              <input id="bairro" type="text" class="validate active">
-              <label for="bairro">Bairro</label>
-            </div>
-            <!-- INPUT ESTADO  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">map</i>
-              <input id="estado" type="text" class="validate active">
-              <label for="estado">Estado</label>
-            </div>
-            <!-- INPUT DDD  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">local_phone</i>
-              <input id="ddd" type="text" class="validate active">
-              <label for="ddd">DDD</label>
-            </div>
 
-            <a onclick="mostrar()" class="waves-effect waves-light btn-small"><i
-                class="material-icons left">search</i>Buscar</a>
-            <a class="waves-effect waves-light btn-small"><i class="material-icons left">clear</i>Limpar</a>
-          </div>
-        </div>
+  <div class="container">
 
-        <!-- CONTEUDO DA RUA -->
-        <div id="rua-tab" class="col s12">
-          <h1 class="header adjust-top center orange-text"> Busca RUA</h1>
-          <div class="row center">
-            <h5 class="header adjust-top col s12 light">Consulta de Ruas</h5>
-            <!-- INPUT UF -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">account_circle</i>
-              <input id="uf-rua" type="text" class="validate">
-              <label for="uf-rua">UF</label>
-            </div>
-            <!-- INPUT CIDADE  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">location_city</i>
-              <input id="cidade-rua" type="text" class="validate active">
-              <label for="cidade-rua">CIDADE</label>
-            </div>
-            <!-- INPUT RUA  -->
-            <div class="input-field col s12 m6 l3">
-              <i class="material-icons prefix">location_on</i>
-              <input id="rua" type="text" class="validate active">
-              <label for="rua">Rua</label>
-            </div>
-
-
-            <a onclick="mostrarRua()" class="waves-effect waves-light btn-small"><i
-                class="material-icons left">search</i>Buscar</a>
-            <a class="waves-effect waves-light btn-small"><i class="material-icons left">clear</i>Limpar</a>
-          </div>
-
-          <ul id="lista-ruas" class="collection">
-            
-          </ul>
-        </div>
-
-        <!-- CONTEUDO DO LOG -->
-        <div id="log-tab" class="col s12">LOG</div>
+    <!-- TABS -->
+    <div class="row">
+      <div class="col s12">
+        <ul class="tabs blue lighten-4">
+          <li class="tab col s3"><a class="active" href="#cep-tab">CEP</a></li>
+          <li class="tab col s3"><a href="#rua-tab">RUA</a></li>
+          <li class="tab col s3"><a href="#log-tab">LOG</a></li>
+        </ul>
       </div>
 
+      <!-- CEP -->
+      <div id="cep-tab" class="col s12">
+        <div class="card painel">
+          <h5>Consulta de CEP</h5>
+
+          <div class="row">
+            <div class="input-field col s4">
+              <input id="cep" type="text">
+              <label>CEP</label>
+            </div>
+
+            <div class="input-field col s4">
+              <input id="cidade" type="text">
+              <label>Cidade</label>
+            </div>
+
+            <div class="input-field col s4">
+              <input id="estado" type="text">
+              <label>Estado</label>
+            </div>
+
+            <div class="input-field col s4">
+              <input id="bairro" type="text">
+              <label>Bairro</label>
+            </div>
+
+            <div class="input-field col s4">
+              <input id="ddd" type="text">
+              <label>DDD</label>
+            </div>
+          </div>
+
+          <button onclick="mostrar()" class="btn blue darken-2">Buscar</button>
+          <button onclick="limparCampos()" class="btn grey">Limpar</button>
+        </div>
+      </div>
+
+      <!-- RUA -->
+      <div id="rua-tab" class="col s12">
+        <div class="card painel">
+          <h5>Busca por Rua</h5>
+
+          <div class="row">
+            <div class="col s4">
+              <select onchange="buscarCidades(this.value)" id="lista-ufs" class="browser-default"></select>
+            </div>
+
+            <div class="col s4">
+              <select id="lista-cidades" class="browser-default"></select>
+            </div>
+
+            <div class="input-field col s4">
+              <input id="rua" type="text">
+              <label>Rua</label>
+            </div>
+          </div>
+
+          <button onclick="mostrarRua()" class="btn blue darken-2">Buscar</button>
+
+          <ul id="lista-ruas" class="collection"></ul>
+        </div>
+      </div>
+
+      <!-- LOG -->
+      <div id="log-tab" class="col s12">
+        <div class="card painel">
+          <h5>Logs do Sistema</h5>
+          <ul id="logs" class="collection log-box"></ul>
+        </div>
+      </div>
 
     </div>
   </div>
 
+  <!-- SCRIPTS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@hiseb/confetti@2.1.0/dist/confetti.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-
-  <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
   <script src="js/script.js"></script>
 
 </body>
-
 </html>

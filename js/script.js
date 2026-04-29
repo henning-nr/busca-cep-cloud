@@ -1,139 +1,231 @@
-// ==========================
-// BUSCA POR CEP
-// ==========================
+// ================= LOG COM HISTÓRICO =================
+function adicionarLog(msg, dados = null) {
+  let log = document.querySelector("#logs");
+
+  let item = document.createElement("li");
+  item.className = "collection-item log-item";
+  item.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+
+  if (dados) {
+    item.dataset.dados = JSON.stringify(dados);
+    item.style.cursor = "pointer";
+
+    item.onclick = function () {
+      restaurarBusca(JSON.parse(this.dataset.dados));
+    };
+
+    salvarHistorico(msg, dados);
+  }
+
+  log.prepend(item);
+}
+
+// ================= SALVAR HISTÓRICO =================
+function salvarHistorico(msg, dados) {
+  let historico = JSON.parse(localStorage.getItem("historico")) || [];
+
+  historico.unshift({
+    msg,
+    dados,
+    hora: new Date().toLocaleTimeString()
+  });
+
+  localStorage.setItem("historico", JSON.stringify(historico));
+}
+
+// ================= CARREGAR HISTÓRICO =================
+function carregarHistorico() {
+  let historico = JSON.parse(localStorage.getItem("historico")) || [];
+
+  for (let h of historico) {
+    let item = document.createElement("li");
+    item.className = "collection-item log-item";
+    item.innerText = `[${h.hora}] ${h.msg}`;
+    item.style.cursor = "pointer";
+
+    item.onclick = function () {
+      restaurarBusca(h.dados);
+    };
+
+    document.querySelector("#logs").appendChild(item);
+  }
+}
+
+// ================= RESTAURAR BUSCA =================
+function restaurarBusca(dados) {
+  if (dados.cep) {
+    document.getElementById("cep").value = dados.cep;
+    document.getElementById("cidade").value = dados.localidade;
+    document.getElementById("bairro").value = dados.bairro;
+    document.getElementById("ddd").value = dados.ddd;
+    document.getElementById("estado").value = dados.uf;
+
+    M.updateTextFields();
+
+    let instance = M.Tabs.getInstance(document.querySelector(".tabs"));
+    instance.select("cep-tab");
+
+    adicionarLog("Busca restaurada (CEP)");
+  }
+
+  else if (dados.tipo === "rua") {
+    document.getElementById("lista-ufs").value = dados.uf;
+    buscarCidades(dados.uf);
+
+    setTimeout(() => {
+      document.getElementById("lista-cidades").value = dados.cidade;
+      document.getElementById("rua").value = dados.rua;
+
+      M.updateTextFields();
+
+      let instance = M.Tabs.getInstance(document.querySelector(".tabs"));
+      instance.select("rua-tab");
+
+      mostrarRua();
+    }, 500);
+
+    adicionarLog("Busca restaurada (Rua)");
+  }
+}
+
+// ================= CEP =================
 function mostrar() {
-	let cep = document.getElementById("cep").value
+  let cep = document.getElementById("cep").value.replace(/\D/g, "");
 
-	let url = `https://viacep.com.br/ws/${cep}/json/`
+  if (!cep) {
+    alert("Digite um CEP!");
+    return;
+  }
 
-	fetch(url)
-		.then((res) => res.json())
-		.then((dados) => {
-			console.log("CEP:", dados)
+  adicionarLog("Buscando CEP: " + cep);
 
-			if (dados.erro) {
-				alert("CEP não encontrado!")
-				return
-			}
+  fetch(`https://viacep.com.br/ws/${cep}/json/`)
+    .then(res => res.json())
+    .then(dados => {
+      if (dados.erro) {
+        adicionarLog("CEP não encontrado");
+        return;
+      }
 
-			document.getElementById("cidade").value = dados.localidade
-			document.getElementById("bairro").value = dados.bairro
-			document.getElementById("ddd").value = dados.ddd
-			document.getElementById("estado").value = dados.uf
+      document.getElementById("cidade").value = dados.localidade;
+      document.getElementById("bairro").value = dados.bairro;
+      document.getElementById("ddd").value = dados.ddd;
+      document.getElementById("estado").value = dados.uf;
 
-			M.updateTextFields()
-		})
-		.catch((err) => {
-			console.log("Erro:", err)
-			alert("Erro ao buscar CEP")
-		})
+      M.updateTextFields();
+
+      adicionarLog("CEP encontrado", dados); // 🔥 salva histórico
+    })
+    .catch(() => adicionarLog("Erro ao buscar CEP"));
 }
 
-// ==========================
-// BUSCA POR RUA
-// ==========================
+// ================= RUA =================
 function mostrarRua() {
-	let uf = document.getElementById("uf-rua").value
-	let cidade = document.getElementById("cidade-rua").value
-	let rua = document.getElementById("rua").value
+  let uf = document.getElementById("lista-ufs").value;
+  let cidade = document.getElementById("lista-cidades").value;
+  let rua = document.getElementById("rua").value;
 
-	if (!uf || !cidade || !rua) {
-		alert("Preencha todos os campos!")
-		return
-	}
+  if (!uf || !cidade || !rua) {
+    alert("Preencha UF, cidade e rua!");
+    return;
+  }
 
-	cidade = encodeURIComponent(cidade)
-	rua = encodeURIComponent(rua)
+  adicionarLog(`Buscando rua: ${rua} - ${cidade}/${uf}`);
 
-	let url = `https://viacep.com.br/ws/${uf}/${cidade}/${rua}/json/`
+  fetch(`https://viacep.com.br/ws/${uf}/${cidade}/${rua}/json/`)
+    .then(res => res.json())
+    .then(ruas => {
 
-	let lista = document.getElementById("lista-ruas")
+      if (!Array.isArray(ruas) || ruas.length === 0) {
+        document.querySelector("#lista-ruas").innerHTML =
+          "<li class='collection-item'>Nenhum resultado</li>";
+        adicionarLog("Nenhuma rua encontrada");
+        return;
+      }
 
-	// LOADING
-	lista.innerHTML = `
-	  <li class="collection-item center-align">
-	    <div class="preloader-wrapper active">
-	      <div class="spinner-layer spinner-blue-only">
-	        <div class="circle-clipper left"><div class="circle"></div></div>
-	        <div class="gap-patch"><div class="circle"></div></div>
-	        <div class="circle-clipper right"><div class="circle"></div></div>
-	      </div>
-	    </div>
-	    <p>Carregando...</p>
-	  </li>
-	`
+      let lista = "";
 
-	fetch(url)
-		.then((res) => res.json())
-		.then((ruas) => {
-			console.log("RUAS:", ruas)
+      for (let r of ruas) {
+        lista += `
+          <li class="collection-item" onclick="preencherCEP('${r.cep}')">
+            <strong>${r.logradouro}</strong><br>
+            Bairro: ${r.bairro}<br>
+            Cidade: ${r.localidade}<br>
+            <span style="color:blue;font-weight:bold;">CEP: ${r.cep}</span>
+          </li>
+        `;
+      }
 
-			if (ruas.erro || ruas.length === 0) {
-				lista.innerHTML = `
-					<li class="collection-item red-text">
-						Nenhum resultado encontrado
-					</li>
-				`
-				return
-			}
+      document.querySelector("#lista-ruas").innerHTML = lista;
 
-			let html = ""
-		
-			ruas.forEach((item) => {
-				html += `
-					<li class="collection-item avatar">
+      adicionarLog("Busca de ruas concluída", {
+        tipo: "rua",
+        uf,
+        cidade,
+        rua
+      });
 
-						<i class="material-icons circle red">location_on</i>
-
-						<span class="title"><strong>${item.logradouro}</strong></span>
-
-						<p>
-							CEP: ${item.cep} <br>
-							Bairro: ${item.bairro} <br>
-							Cidade: ${item.localidade} <br>
-							Estado: ${item.estado} ${item.uf}
-						</p>
-
-						<a href="#!" class="secondary-content">
-							<i class="material-icons">search</i>
-						</a>
-
-					</li>
-				`
-			})
-
-			lista.innerHTML = html
-		})
-		.catch((err) => {
-			console.log("Erro:", err)
-			alert("Erro ao buscar ruas")
-		})
+      confetti();
+    })
+    .catch(() => adicionarLog("Erro ao buscar ruas"));
 }
 
-// ==========================
-// LIMPAR TUDO (COMPLETO)
-// ==========================
-function limparTudo() {
-	// CEP
-	document.getElementById("cep").value = ""
-	document.getElementById("cidade").value = ""
-	document.getElementById("bairro").value = ""
-	document.getElementById("estado").value = ""
-	document.getElementById("ddd").value = ""
+// ================= RESTO =================
+function preencherCEP(cep) {
+  document.getElementById("cep").value = cep;
+  M.updateTextFields();
 
-	// RUA
-	document.getElementById("uf-rua").value = ""
-	document.getElementById("cidade-rua").value = ""
-	document.getElementById("rua").value = ""
+  let instance = M.Tabs.getInstance(document.querySelector(".tabs"));
+  instance.select("cep-tab");
 
-	// LISTA
-	document.getElementById("lista-ruas").innerHTML = ""
+  mostrar();
+}
 
-	// REMOVE ESTADOS VISUAIS
-	document.querySelectorAll("input").forEach((input) => {
-		input.classList.remove("valid", "invalid")
-	})
+function buscarUFs() {
+  axios.get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+    .then(res => {
+      let lista = '<option disabled selected>UF</option>';
 
-	// Atualiza Materialize
-	M.updateTextFields()
+      for (let uf of res.data) {
+        lista += `<option value="${uf.sigla}">${uf.nome}</option>`;
+      }
+
+      document.querySelector("#lista-ufs").innerHTML = lista;
+      adicionarLog("UFs carregadas");
+    });
+}
+
+function buscarCidades(uf) {
+  fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`)
+    .then(res => res.json())
+    .then(cidades => {
+      let lista = '<option disabled selected>Cidade</option>';
+
+      for (let c of cidades) {
+        lista += `<option value="${c.nome}">${c.nome}</option>`;
+      }
+
+      document.querySelector("#lista-cidades").innerHTML = lista;
+    });
+}
+
+function limparCampos() {
+  document.querySelectorAll("input").forEach(i => i.value = "");
+  document.querySelector("#lista-ruas").innerHTML = "";
+  adicionarLog("Campos limpos");
+  M.updateTextFields();
+}
+
+// ================= INIT =================
+document.addEventListener("DOMContentLoaded", () => {
+  M.Tabs.init(document.querySelectorAll(".tabs"));
+  buscarUFs();
+  carregarHistorico(); // 🔥 carrega histórico salvo
+  adicionarLog("Sistema iniciado");
+});
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js")
+    .then(() => console.log("Service Worker registrado"))
+    .catch(err => console.log("Erro:", err));
 }
