@@ -156,3 +156,19 @@ function buscarCidades(uf) {
         addLog(`Erro ao carregar cidades para UF ${uf}: ${error.statusText || error}`, 'error')
     })
 }
+
+// Registrar o Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(reg => {
+                console.log('Service Worker registrado com sucesso!', reg);
+                addLog('Service Worker registrado (PWA ativo)', 'success');
+            })
+            .catch(err => {
+                console.error('Erro ao registrar Service Worker:', err);
+                addLog('Erro ao registrar Service Worker (PWA inativo)', 'error');
+            });
+    });
+}
+
